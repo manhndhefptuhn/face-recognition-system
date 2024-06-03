@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  CollectionID:
+    Type: String
+    Default: face-collection
+
+Resources:
+  RekognitionCollection:
+    Type: AWS::Rekognition::Collection
+    Properties:
+      CollectionId: !Ref CollectionID
+
+Outputs:
+  RekognitionCollectionName:
+    Value: !Ref RekognitionCollection

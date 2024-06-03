@@ -1,0 +1,83 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  face-extractor-ojt
+
+  Sample SAM Template for face-extractor-ojt
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+
+Parameters:
+  RegistrationFunctionName:
+    Type: String
+    Default: face-index-lambda
+  SearchFaceFunctionName:
+    Type: String
+    Default: face-search-lambda
+    SearchFaceFunctionName2:
+    Type: String
+    Default: face-search-lambda-2
+
+Resources:
+  ExtractFaceInImages:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: extract_face_in_images/
+      Handler: app.lambda_handler
+      Environment:
+        Variables:
+          COLLECTION_ID: !Ref CollectionID
+      FunctionName: !Ref RegistrationFunctionName
+      MemorySize: 500
+      Role: arn:aws:iam::812723145208:role/iam-cloud-ojt-lambda-role
+      Runtime: python3.11
+      Timeout: 300
+      Architectures:
+      - x86_64
+
+  SearchFaceInImages:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: search_face_in_images/
+      Handler: app.lambda_handler
+      Environment:
+        Variables:
+          COLLECTION_ID: !Ref CollectionID
+      FunctionName: !Ref SearchFaceFunctionName
+      MemorySize: 500
+      Role: arn:aws:iam::812723145208:role/iam-cloud-ojt-lambda-role
+      Runtime: python3.11
+      Timeout: 300
+      Architectures:
+      - x86_64
+
+  SearchFaceVersion2:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: search_face_in_images_v2/
+      Handler: app.lambda_handler
+      Environment:
+        Variables:
+          REKOGNITION_COLLECTION: !Ref CollectionID
+      FunctionName: !Ref SearchFaceFunctionName
+      MemorySize: 500
+      Role: arn:aws:iam::812723145208:role/iam-cloud-ojt-lambda-role
+      Runtime: python3.11
+      Timeout: 300
+      Architectures:
+      - x86_64
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  HelloWorldFunction:
+    Description: Extract Face In Images Lambda Function ARN
+    Value: !GetAtt ExtractFaceInImages.Arn
+  HelloWorldFunctionIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value: !GetAtt HelloWorldFunctionRole.Arn

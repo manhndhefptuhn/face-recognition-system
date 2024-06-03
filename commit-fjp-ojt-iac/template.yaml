@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Root stack for managing face-extrator resources
+
+Parameters:
+  # SubscriptionEmail:
+  #   Type: String
+  #   Description: Email endpoint for Order Notifications
+
+Resources:
+  # DynamoDB:
+  #   Type: AWS::Serverless::Application
+  #   Properties:
+  #     Location: dynamo/template.yaml
+
+  # APIGateway:
+  #   Type: AWS::Serverless::Application
+  #   Properties:
+  #     Location: api-gateway/template.yaml
+  #     Parameters:
+  #       Lambda1: !GetAtt DynamoDB.Outputs.DynamoDBTableName
+  #       Lambda2: !Ref SubscriptionEmail
+
+  Lambda:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: lambda/template.yaml
+  
+  Rekognition:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: rekognition/template.yaml
+
+Outputs:
+  # DynamoDBTableName:
+  #   Description: "DynamoDB Table Name"
+  #   Value: !GetAtt DynamoDB.Outputs.DynamoDBTableName
+
+  # ApiEndpoint:
+  #   Description: "Orders API Gateway Endpoint URL"
+  #   Value: !GetAtt APIGateway.Outputs.APIEndpoint
